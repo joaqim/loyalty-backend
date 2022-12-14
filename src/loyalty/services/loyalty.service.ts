@@ -45,7 +45,7 @@ class LoyaltyService {
     async updateCoupons(
         userId: string,
         email: string
-    ): Promise<{ data?: PostBatchCouponsResultDto; errors?: string[] }> {
+    ): Promise<{ data?: PostBatchCouponsDto; errors?: string[] }> {
         const { data: rank, errors } = await mycredService.list<MyCredRank>(
             'ranks',
             userId
@@ -66,10 +66,10 @@ class LoyaltyService {
             couponsUpToHighestRank,
             email
         );
+        return {data: batchUpdateForCoupons};
 
-        const wooBatchUpdateCallResult = await couponsService.batchCoupons(batchUpdateForCoupons);
-
-        return { data: wooBatchUpdateCallResult, errors };
+        //const wooBatchUpdateCallResult = await couponsService.batchCoupons(batchUpdateForCoupons);
+        //return { data: wooBatchUpdateCallResult, errors };
     }
 
     /* async updateById(id: string, resource: Partial<Loyalty>) {

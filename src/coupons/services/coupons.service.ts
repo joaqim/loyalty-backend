@@ -61,9 +61,7 @@ class CouponsService {
             consumerSecret: WOO_GB_SECRET,
             version: 'wc/v2',
         });
-        return await api.post('coupons/batch', {
-            resource,
-        });
+        return (await api.post('coupons/batch', resource)).data;
     }
 
     /* async updateById(id: string, resource: Partial<Coupon>) {
