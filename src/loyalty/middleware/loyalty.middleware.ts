@@ -11,7 +11,7 @@ class LoyaltyMiddleware {
                     `Loyalty Endpoint does not support 'email' in post.`
                 );
             }
-            if (typeof user_id !== 'string') {
+            if (typeof user_id !== 'string' || !/^\d+$/.test(user_id)) {
                 throw new Error(`Missing or invalid user_id: ${user_id}`);
             }
         } catch (error) {
