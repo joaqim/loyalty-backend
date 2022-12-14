@@ -66,7 +66,11 @@ class LoyaltyService {
             couponsUpToHighestRank,
             email
         );
-        return {data: batchUpdateForCoupons};
+
+        if (batchUpdateForCoupons.update.length > 0)
+            await couponsService.batchCoupons(batchUpdateForCoupons);
+
+        return { data: batchUpdateForCoupons };
 
         //const wooBatchUpdateCallResult = await couponsService.batchCoupons(batchUpdateForCoupons);
         //return { data: wooBatchUpdateCallResult, errors };
