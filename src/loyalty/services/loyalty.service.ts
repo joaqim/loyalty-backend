@@ -57,13 +57,14 @@ class LoyaltyService {
 
         const { data: coupons } = await couponsService.listCouponsBrief(100, 1);
 
-        const couponsUpToHighestRank = tryMatchCouponsUpToRank(
+        const { eligibleCoupons, remainingCoupons } = tryMatchCouponsUpToRank(
             coupons,
             rank as MyCredRank
         );
 
         const batchUpdateForCoupons = new PostBatchCouponsDto(
-            couponsUpToHighestRank,
+            eligibleCoupons,
+            remainingCoupons,
             email
         );
 
