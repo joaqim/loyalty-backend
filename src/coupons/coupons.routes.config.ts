@@ -8,6 +8,7 @@ export class CouponsRoutes extends CommonRoutesConfig {
     }
     configureRoutes(): Application {
         this.app.route('/coupons').get(couponsController.getCoupons);
+        this.app.route('/coupons/brief').get(couponsController.getCouponsBrief);
 
         return this.app;
     }

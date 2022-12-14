@@ -61,7 +61,7 @@ const loggerOptions: expressWinston.LoggerOptions = {
 
 if (!process.env.DEBUG) {
     loggerOptions.meta = false; // when not debugging, make terse
-    //if (typeof global.it === 'function') {
+    // if (typeof global.it === 'function') {
     // NOTE: Note sure what this determines exactly
     if (
         typeof (global as typeof globalThis & { it: () => unknown }).it ===
@@ -73,9 +73,9 @@ if (!process.env.DEBUG) {
 
 app.use(expressWinston.logger(loggerOptions));
 
-routes.push(new CouponsRoutes(app));
+// routes.push(new CouponsRoutes(app));
 routes.push(new LoyaltyRoutes(app));
-routes.push(new MyCredRoutes(app));
+// routes.push(new MyCredRoutes(app));
 
 app.get('/', (req: express.Request, res: express.Response) => {
     res.status(200).send(`Server running at http://localhost:${port}`);

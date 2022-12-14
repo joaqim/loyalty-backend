@@ -11,7 +11,10 @@ export class LoyaltyRoutes extends CommonRoutesConfig {
     configureRoutes(): Application {
         this.app
             .route('/loyalty')
-            .all(loyaltyMiddleware.validatePostBody)
+            .all(
+                loyaltyMiddleware.validatePostBody,
+                loyaltyMiddleware.fetchUserEmail
+            )
             .post(loyaltyController.updateLoyalty);
 
         return this.app;

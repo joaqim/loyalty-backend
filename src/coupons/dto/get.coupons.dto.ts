@@ -1,3 +1,3 @@
 export class GetCouponsDto {
-    //constructor(payload: unknown) {}
+    // constructor(payload: unknown) {}
 }

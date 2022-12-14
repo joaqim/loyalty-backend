@@ -6,14 +6,17 @@ import {
 } from '../../utils/woo.keys';
 
 import { PostBatchCouponsDto } from '../dto/post.batch.coupon.dto';
+import { PostBatchCouponsResultDto } from '../dto/post.batch.coupons.result.dto';
+import { CouponBrief } from '../interfaces/coupon.brief.interface';
 import { Coupon } from '../interfaces/coupon.interface';
+import { tryGetCouponRank } from '../utils/tryGetCouponRank';
 
 interface WooPaginationHeaders {
     'x-wp-total': string;
     'x-wp-totalpages': string;
 }
 class CouponsService {
-    async list(
+    async listCoupons(
         limit: number,
         page: number
     ): Promise<{ data: Coupon[]; headers: WooPaginationHeaders }> {
@@ -30,8 +33,37 @@ class CouponsService {
         });
     }
 
-    async batch(resource: PostBatchCouponsDto): Promise<Coupon[]> {
-        return [];
+    async listCouponsBrief(
+        limit: number,
+        page: number
+    ): Promise<{ data: CouponBrief[]; headers: WooPaginationHeaders }> {
+        const { data: coupons, headers } = await this.listCoupons(limit, page);
+        const data = coupons
+            .map((coupon) => new CouponBrief(coupon))
+            .filter(({ description }) => /^Rank \d+/.test(description))
+            .sort(
+                (couponA, couponB) =>
+                    tryGetCouponRank(couponA) - tryGetCouponRank(couponB)
+            );
+
+        return {
+            data,
+            headers,
+        };
+    }
+
+    async batchCoupons(
+        resource: PostBatchCouponsDto
+    ): Promise<PostBatchCouponsResultDto> {
+        const api = new WooCommerceRestApi({
+            url: WOO_GB_STOREFRONT,
+            consumerKey: WOO_GB_IDENTITY,
+            consumerSecret: WOO_GB_SECRET,
+            version: 'wc/v2',
+        });
+        return await api.post('coupons/batch', {
+            resource,
+        });
     }
 
     /* async updateById(id: string, resource: Partial<Coupon>) {

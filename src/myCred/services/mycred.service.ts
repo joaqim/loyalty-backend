@@ -4,17 +4,15 @@ import {
     WOO_GB_MYCRED_API_ENDPOINT,
     WOO_GB_STOREFRONT,
 } from '../../utils/woo.keys';
-import type { MyCredBadges, MyCredPoints, MyCredRanks } from '../interfaces';
+import type { MyCredBadges, MyCredPoints, MyCredRank } from '../interfaces';
 
 type MyCredResources = 'badges' | 'points' | 'ranks';
 
 class MyCredService {
-    async list(
+    async list<T extends MyCredBadges | MyCredPoints | MyCredRank>(
         resources: MyCredResources,
         userId: string
-    ): Promise<
-        MyCredBadges | MyCredPoints | MyCredRanks | { errors: string[] }
-    > {
+    ): Promise<{ data?: T; errors?: string[] }> {
         const url = `${WOO_GB_STOREFRONT}/wp-json/${WOO_GB_MYCRED_API_ENDPOINT}/${resources}`;
         try {
             const { data, status, statusText } = await axios({
@@ -31,7 +29,7 @@ class MyCredService {
                 },
             });
 
-            if (status !== 200 || typeof data.Error === 'string') {
+            if (status !== 200 || !data || typeof data.Error === 'string') {
                 throw new Error(
                     `Request returned status: ${status}:${statusText} - '${
                         data.Error as string
@@ -39,14 +37,7 @@ class MyCredService {
                 );
             }
 
-            switch (resources) {
-                case 'badges':
-                    return data as MyCredBadges;
-                case 'points':
-                    return data as MyCredPoints;
-                case 'ranks':
-                    return data as MyCredRanks;
-            }
+            return { data };
         } catch (error) {
             const message = (error as Error).message;
             return {

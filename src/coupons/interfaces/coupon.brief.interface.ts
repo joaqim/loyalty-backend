@@ -1,7 +1,9 @@
 import { Coupon } from './coupon.interface';
-const keys = ['id', 'code', 'email_restrictions', 'used_by'];
+const keys = ['id', 'description', 'code', 'email_restrictions'];
+
 export class CouponBrief {
     id!: string;
+    description!: string;
     code!: string;
     email_restrictions!: string[];
     used_by!: string[];

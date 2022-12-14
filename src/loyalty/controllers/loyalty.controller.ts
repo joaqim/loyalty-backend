@@ -6,9 +6,12 @@ const log: debug.IDebugger = debug('server:ranks-controller');
 
 class LoyaltyController {
     public async updateLoyalty(req: Request, res: Response) {
-        const { email } = req.body;
-        const loyalty = await loyaltyService.updateLoyalty(email, '');
-        res.status(201).send({ email });
+        const { user_id, email } = req.body;
+        const updatedCoupons = await loyaltyService.updateCoupons(
+            user_id,
+            email
+        );
+        res.status(201).send(updatedCoupons);
     }
 }
 

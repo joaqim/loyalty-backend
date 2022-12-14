@@ -6,7 +6,9 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    // NOTE: This json import is just used for mocking in ./test, consider using seperated tsconfig.test.json
+    "resolveJsonModule": true,
   },
   "exclude": [
     "node_modules",
