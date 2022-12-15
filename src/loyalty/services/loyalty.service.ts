@@ -10,7 +10,6 @@ import {
     WOO_GB_IDENTITY,
     WOO_GB_SECRET,
 } from '../../utils/woo.keys';
-import { PostBatchCouponsResultDto } from '../../coupons/dto/post.batch.coupons.result.dto';
 import { tryMatchCouponsUpToRank } from '../../coupons/utils/tryMatchCouponsUpToRank';
 
 class LoyaltyService {
@@ -45,7 +44,12 @@ class LoyaltyService {
     async updateCoupons(
         userId: string,
         email: string
-    ): Promise<{ data?: PostBatchCouponsDto; errors?: string[] }> {
+    ): Promise<{
+        data?: PostBatchCouponsDto;
+        previousRank?: string;
+        newRank?: string;
+        errors?: string[];
+    }> {
         const { data: rank, errors } = await mycredService.list<MyCredRank>(
             'ranks',
             userId
@@ -61,6 +65,16 @@ class LoyaltyService {
             coupons,
             rank as MyCredRank
         );
+        const previousRank = rank?.title;
+        let newRank: string | undefined;
+
+        if (eligibleCoupons.length > 0) {
+            const formatCouponRank = ({ description }: CouponBrief): string =>
+                (description.match(/Rank \d+\s+([\w- ]+ [IV]+)/) as string[])[1];
+            newRank = formatCouponRank(
+                eligibleCoupons[eligibleCoupons.length - 1]
+            );
+        }
 
         const batchUpdateForCoupons = new PostBatchCouponsDto(
             eligibleCoupons,
@@ -68,25 +82,11 @@ class LoyaltyService {
             email
         );
 
-        if (batchUpdateForCoupons.update.length > 0)
-            await couponsService.batchCoupons(batchUpdateForCoupons);
 
-        return { data: batchUpdateForCoupons };
+        //if (batchUpdateForCoupons.update.length > 0) await couponsService.batchCoupons(batchUpdateForCoupons);
 
-        //const wooBatchUpdateCallResult = await couponsService.batchCoupons(batchUpdateForCoupons);
-        //return { data: wooBatchUpdateCallResult, errors };
+        return { data: batchUpdateForCoupons, previousRank, newRank };
     }
-
-    /* async updateById(id: string, resource: Partial<Loyalty>) {
-        return {};
-    }
-
-    async readById(id: string) {
-    }
-    async deleteById(id: string) {
-    }
-    async patchById(id: string, resource: Partial<Loyalty>) {
-    } */
 }
 
 export default new LoyaltyService();

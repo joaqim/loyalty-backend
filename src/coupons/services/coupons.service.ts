@@ -36,7 +36,11 @@ class CouponsService {
     async listCouponsBrief(
         limit: number,
         page: number
-    ): Promise<{ data: CouponBrief[]; headers: WooPaginationHeaders }> {
+    ): Promise<{
+        data: CouponBrief[];
+        headers: WooPaginationHeaders;
+        errors?: string[];
+    }> {
         const { data: coupons, headers } = await this.listCoupons(limit, page);
         const data = coupons
             .map((coupon) => new CouponBrief(coupon))
@@ -46,9 +50,30 @@ class CouponsService {
                     tryGetCouponRank(couponA) - tryGetCouponRank(couponB)
             );
 
+        const verifyCouponDescriptions = (
+            coups: CouponBrief[]
+        ): CouponBrief[] => {
+            return coups.filter(
+                ({ description }) =>
+                    !/^Rank \d+\s+[\w- ]+ [IV]+/.test(description)
+            );
+        };
+
+        let errors: string[] | undefined;
+        const invalidDescriptions = verifyCouponDescriptions(data);
+        if (invalidDescriptions.length > 0) {
+            errors = [
+                `Unexpected Coupon description(s): `,
+                invalidDescriptions
+                    .map(({ description }) => description)
+                    .join(', '),
+            ];
+        }
+
         return {
             data,
             headers,
+            errors,
         };
     }
 

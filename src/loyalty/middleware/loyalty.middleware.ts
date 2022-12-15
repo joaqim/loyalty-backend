@@ -12,7 +12,7 @@ class LoyaltyMiddleware {
                 );
             }
             if (typeof user_id !== 'string' || !/^\d+$/.test(user_id)) {
-                throw new Error(`Missing or invalid user_id: ${user_id}`);
+                throw new Error(`Missing or invalid user_id: '${user_id}'`);
             }
         } catch (error) {
             const message = (error as Error).message;
@@ -28,8 +28,9 @@ class LoyaltyMiddleware {
         const { data, errors } = await loyaltyService.getUserEmail(user_id);
         if (errors) {
             res.status(401).send({ errors });
+        } else {
+            req.body.email = data;
         }
-        req.body.email = data;
 
         next();
     }
