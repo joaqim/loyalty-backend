@@ -7,5 +7,5 @@ export const tryGetCouponRank = (coupon: CouponBrief) => {
             `Failed to find Rank in Coupon description: '${coupon.description}'`
         );
     }
-    return parseInt(matches[1]);
+    return parseInt(matches[1], 10);
 };

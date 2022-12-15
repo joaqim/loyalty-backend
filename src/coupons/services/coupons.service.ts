@@ -5,7 +5,7 @@ import {
     WOO_GB_STOREFRONT,
 } from '../../utils/woo.keys';
 
-import { PostBatchCouponsDto } from '../dto/post.batch.coupon.dto';
+import { PostBatchCouponsDto } from '../dto/post.batch.coupons.dto';
 import { PostBatchCouponsResultDto } from '../dto/post.batch.coupons.result.dto';
 import { CouponBrief } from '../interfaces/coupon.brief.interface';
 import { Coupon } from '../interfaces/coupon.interface';

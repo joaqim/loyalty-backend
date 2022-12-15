@@ -2,6 +2,7 @@ import { CouponBrief } from '../interfaces/coupon.brief.interface';
 
 export class PostBatchCouponDto {
     id: string;
+    // tslint:disable-next-line variable-name
     email_restrictions: string[];
 
     constructor(
@@ -12,7 +13,7 @@ export class PostBatchCouponDto {
         this.id = coupon.id;
         if (removeEmail) {
             this.email_restrictions = coupon.email_restrictions.filter(
-                (email) => email != additionalEmail
+                (email) => email !== additionalEmail
             );
         } else {
             this.email_restrictions = [
@@ -20,24 +21,5 @@ export class PostBatchCouponDto {
                 additionalEmail,
             ];
         }
-    }
-}
-
-export class PostBatchCouponsDto {
-    update: PostBatchCouponDto[] = [];
-
-    constructor(
-        eligibleCoupons: CouponBrief[],
-        remainingCoupons: CouponBrief[],
-        email: string
-    ) {
-        eligibleCoupons.forEach((coupon) => {
-            if (!coupon.email_restrictions.includes(email))
-                this.update.push(new PostBatchCouponDto(coupon, email));
-        });
-        remainingCoupons.forEach((coupon) => {
-            if (coupon.email_restrictions.includes(email))
-                this.update.push(new PostBatchCouponDto(coupon, email, true));
-        });
     }
 }

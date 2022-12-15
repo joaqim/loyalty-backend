@@ -46,7 +46,7 @@ const debugLog: debug.IDebugger = debug('server');
 app.use(bodyparser.json());
 // app.use(cors());
 // app.use(cors({origin: "http://env-6713015.sekd1.beebyteapp.io", credentials: true}));
-app.use(cors({origin: true, credentials: true}));
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(helmet());
 
@@ -90,7 +90,7 @@ routes.push(new LoyaltyRoutes(app));
 // routes.push(new MyCredRoutes(app));
 
 const publicPath = path.join(__dirname, '../public');
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
 });
 app.use(express.static(publicPath));

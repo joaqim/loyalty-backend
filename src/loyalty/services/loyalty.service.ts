@@ -1,5 +1,5 @@
 import WooCommerceRestApi from '@woocommerce/woocommerce-rest-api';
-import { PostBatchCouponsDto } from '../../coupons/dto/post.batch.coupon.dto';
+import { PostBatchCouponsDto } from '../../coupons/dto/post.batch.coupons.dto';
 import { CouponBrief } from '../../coupons/interfaces/coupon.brief.interface';
 import couponsService from '../../coupons/services/coupons.service';
 import { isValidEmail } from '../../common/utils/isValidEmail';
@@ -70,7 +70,9 @@ class LoyaltyService {
 
         if (eligibleCoupons.length > 0) {
             const formatCouponRank = ({ description }: CouponBrief): string =>
-                (description.match(/Rank \d+\s+([\w- ]+ [IV]+)/) as string[])[1];
+                (
+                    description.match(/Rank \d+\s+([\w- ]+ [IV]+)/) as string[]
+                )[1];
             newRank = formatCouponRank(
                 eligibleCoupons[eligibleCoupons.length - 1]
             );
@@ -82,8 +84,7 @@ class LoyaltyService {
             email
         );
 
-
-        //if (batchUpdateForCoupons.update.length > 0) await couponsService.batchCoupons(batchUpdateForCoupons);
+        // if (batchUpdateForCoupons.update.length > 0) await couponsService.batchCoupons(batchUpdateForCoupons);
 
         return { data: batchUpdateForCoupons, previousRank, newRank };
     }

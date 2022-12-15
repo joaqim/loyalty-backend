@@ -5,7 +5,11 @@ export class CouponBrief {
     id!: string;
     description!: string;
     code!: string;
+
+    // tslint:disable-next-line variable-name
     email_restrictions!: string[];
+
+    // tslint:disable-next-line variable-name
     used_by!: string[];
 
     constructor(coupon: Coupon) {
