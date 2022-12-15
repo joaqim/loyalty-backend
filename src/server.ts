@@ -33,13 +33,13 @@ import cors from 'cors';
 import debug from 'debug';
 import helmet from 'helmet';
 import { CommonRoutesConfig } from './common/common.routes.config';
-import { CouponsRoutes } from './coupons/coupons.routes.config';
 import { LoyaltyRoutes } from './loyalty/loyalty.routes.config';
-import { MyCredRoutes } from './myCred/mycred.routes.config';
+import fs from 'fs';
+import path from 'path';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = process.env.PORT ?? 5000;
+const port = process.env.PORT ?? 8080;
 const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('server');
 
@@ -47,8 +47,20 @@ app.use(bodyparser.json());
 app.use(cors());
 app.use(helmet());
 
+const logDir = './logs';
+
+if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir);
+}
+
 const loggerOptions: expressWinston.LoggerOptions = {
-    transports: [new winston.transports.Console()],
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({
+            filename: `${logDir}/winston-log.txt`,
+            level: 'info',
+        }),
+    ],
     format: winston.format.combine(
         winston.format.json(),
         winston.format.prettyPrint(),
@@ -74,9 +86,22 @@ app.use(expressWinston.logger(loggerOptions));
 routes.push(new LoyaltyRoutes(app));
 // routes.push(new MyCredRoutes(app));
 
+const publicPath = path.join(__dirname, '../public');
+app.get('/', function (req, res) {
+    res.sendFile(path.join(publicPath, 'index.html'));
+});
+app.use(express.static(publicPath));
+
+/*
 app.get('/', (req: express.Request, res: express.Response) => {
+    fs.readFile('./public/index.html', 'utf8', function (err, html) {
+        console.log({ html });
+        if (!err) res.send(html);
+        return;
+    });
     res.status(200).send(`Server running at http://localhost:${port}`);
 });
+*/
 
 export default server.listen(port, () => {
     debugLog(`Server running at http://localhost:${port}`);

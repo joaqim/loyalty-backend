@@ -1,8 +1,19 @@
-import debug from 'debug';
 import { Request, Response } from 'express';
+import winston from 'winston';
 import loyaltyService from '../services/loyalty.service';
 
-const log: debug.IDebugger = debug('server:ranks-controller');
+winston.configure({
+    transports: [
+        new winston.transports.File({
+            filename: './public/loyalty.txt',
+            level: 'info',
+        }),
+    ],
+    format: winston.format.combine(
+        winston.format.json(),
+        winston.format.prettyPrint()
+    ),
+});
 
 class LoyaltyController {
     public async updateLoyalty(req: Request, res: Response) {
@@ -11,6 +22,9 @@ class LoyaltyController {
             user_id,
             email
         );
+
+        winston.log('info', `${JSON.stringify(updatedCoupons)}`);
+
         res.status(201).send(updatedCoupons);
     }
 }
