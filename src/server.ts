@@ -25,7 +25,7 @@ if (typeof WOO_GB_MYCRED_API_ENDPOINT !== 'string') {
 }
 
 import express from 'express';
-import * as http from 'http';
+import https from 'https';
 import * as bodyparser from 'body-parser';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
@@ -38,8 +38,14 @@ import fs from 'fs';
 import path from 'path';
 
 const app: express.Application = express();
-const server: http.Server = http.createServer(app);
+const options = {
+    key: fs.readFileSync('/var/lib/jelastic/keys/privkey.pem', 'utf-8'),
+    cert: fs.readFileSync('/var/lib/jelastic/keys/fullchain.pem', 'utf-8'),
+};
+
 const port = process.env.PORT ?? 8080;
+const server: https.Server = https.createServer(options, app).listen(port);
+
 const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('server');
 
