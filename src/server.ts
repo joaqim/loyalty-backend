@@ -44,7 +44,10 @@ const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('server');
 
 app.use(bodyparser.json());
-app.use(cors());
+// app.use(cors());
+// app.use(cors({origin: "http://env-6713015.sekd1.beebyteapp.io", credentials: true}));
+app.use(cors({origin: true, credentials: true}));
+
 app.use(helmet());
 
 const logDir = './logs';
