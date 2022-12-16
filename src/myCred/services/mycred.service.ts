@@ -3,7 +3,7 @@ import {
     WOO_GB_MYCRED_ACCESS_KEY,
     WOO_GB_MYCRED_API_ENDPOINT,
     WOO_GB_STOREFRONT,
-} from '../../utils/woo.keys';
+} from '../../common/constants/woo.keys';
 import type { MyCredBadges, MyCredPoints, MyCredRank } from '../interfaces';
 
 type MyCredResources = 'badges' | 'points' | 'ranks';

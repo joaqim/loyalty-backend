@@ -9,7 +9,7 @@ import {
     WOO_GB_STOREFRONT,
     WOO_GB_IDENTITY,
     WOO_GB_SECRET,
-} from '../../utils/woo.keys';
+} from '../../common/constants/woo.keys';
 import { tryMatchCouponsUpToRank } from '../../coupons/utils/tryMatchCouponsUpToRank';
 
 class LoyaltyService {
