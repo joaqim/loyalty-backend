@@ -6,7 +6,7 @@ import {
     WOO_GB_SECRET,
     WOO_GB_MYCRED_ACCESS_KEY,
     WOO_GB_MYCRED_API_ENDPOINT,
-} from './utils/woo.keys';
+} from './common/constants/woo.keys';
 
 if (typeof WOO_GB_STOREFRONT !== 'string') {
     throw new Error('Missing WOO_GB_STOREFRONT in .env');
