@@ -1,6 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
-import { isValidEmail } from '../../common/utils/isValidEmail';
+import winston from 'winston';
 import loyaltyService from '../services/loyalty.service';
+
+winston.configure({
+    transports: [
+        new winston.transports.File({
+            filename: './public/loyalty-error.log',
+            level: 'error',
+        }),
+    ],
+    format: winston.format.combine(
+        winston.format.json(),
+        winston.format.prettyPrint()
+    ),
+});
 
 class LoyaltyMiddleware {
     async validatePostBody(req: Request, res: Response, next: NextFunction) {
@@ -8,14 +21,15 @@ class LoyaltyMiddleware {
         try {
             if (typeof email === 'string') {
                 throw new Error(
-                    `Loyalty Endpoint does not support 'email' in post.`
+                    `/loyalty calls does not support 'email' in body.`
                 );
             }
             if (typeof user_id !== 'string' || !/^\d+$/.test(user_id)) {
-                throw new Error(`Missing or invalid user_id: '${user_id}'`);
+                throw new Error(`Missing or invalid 'user_id': '${user_id}'`);
             }
         } catch (error) {
             const message = (error as Error).message;
+            winston.log('error', message);
             res.status(401).send({
                 errors: [`Failed to verify body`, message],
             });

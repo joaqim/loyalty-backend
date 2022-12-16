@@ -5,7 +5,7 @@ import loyaltyService from '../services/loyalty.service';
 winston.configure({
     transports: [
         new winston.transports.File({
-            filename: './public/loyalty.txt',
+            filename: './public/loyalty-info.log',
             level: 'info',
         }),
     ],
