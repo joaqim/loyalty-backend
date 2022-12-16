@@ -23,9 +23,9 @@ class LoyaltyService {
             version: 'wc/v2',
         });
         const { data } = (await api.post(`customers/${userId}`, {})) as {
-            data: { shipping: { email?: string }; billing: { email?: string } };
+            data: { email?: string };
         };
-        const email = data.billing.email ?? data.shipping.email;
+        const email = data.email;
         if (!email || !isValidEmail(email)) {
             return {
                 data: '',
@@ -84,7 +84,7 @@ class LoyaltyService {
             email
         );
 
-        // if (batchUpdateForCoupons.update.length > 0) await couponsService.batchCoupons(batchUpdateForCoupons);
+        if (batchUpdateForCoupons.update.length > 0) await couponsService.batchCoupons(batchUpdateForCoupons);
 
         return { data: batchUpdateForCoupons, previousRank, newRank };
     }

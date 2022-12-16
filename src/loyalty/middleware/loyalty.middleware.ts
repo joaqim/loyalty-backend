@@ -41,6 +41,7 @@ class LoyaltyMiddleware {
         const { user_id } = req.body;
         const { data, errors } = await loyaltyService.getUserEmail(user_id);
         if (errors) {
+            winston.log('error', JSON.stringify(errors));
             res.status(401).send({ errors });
         } else {
             req.body.email = data;

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import winston from 'winston';
 import loyaltyService from '../services/loyalty.service';
 
-winston.configure({
+const logger = winston.createLogger({
     transports: [
         new winston.transports.File({
             filename: './public/loyalty-info.log',
@@ -18,14 +18,17 @@ winston.configure({
 class LoyaltyController {
     public async updateLoyalty(req: Request, res: Response) {
         const { user_id, email } = req.body;
-        const updatedCoupons = await loyaltyService.updateCoupons(
+        const {data: updatedCoupons, previousRank, newRank, errors} = await loyaltyService.updateCoupons(
             user_id,
             email
         );
 
-        winston.log('info', `${JSON.stringify(updatedCoupons)}`);
-
-        res.status(201).send(updatedCoupons);
+	if(updatedCoupons && updatedCoupons.update.length > 0) {
+        	logger.info(`Updated user: '${user_id}' to new rank: '${newRank}', from previous rank: '${previousRank}'`);
+	} else {
+        	logger.info(`User: '${user_id}' remains at rank: '${newRank}'.`);
+	}
+        res.status(201).send({ data: updatedCoupons, previousRank, newRank, errors});
     }
 }
 
