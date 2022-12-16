@@ -1,0 +1,26 @@
+html, body, iframe { height: 100%; margin-bottom: 10%; }
+
+iframe {
+    height: 100%;
+}
+
+#boxes {
+	content: "";
+        display: table;
+        clear: both;
+}
+#column2 {
+	
+}
+
+#iframeRefresher {
+	margin: 5px 5px;
+}
+
+div {
+        float: left;
+    	min-width: 400px;
+        padding: 0 10px;
+	height: 100%
+}
+
