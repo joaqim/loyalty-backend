@@ -44,14 +44,12 @@ const options = {
 };
 
 const port = process.env.PORT ?? 8080;
-const server: https.Server = https.createServer(options, app).listen(port);
+const server: https.Server = https.createServer(options, app);
 
 const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('server');
 
 app.use(bodyparser.json());
-// app.use(cors());
-// app.use(cors({origin: "http://env-6713015.sekd1.beebyteapp.io", credentials: true}));
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(helmet());
@@ -66,8 +64,8 @@ const loggerOptions: expressWinston.LoggerOptions = {
     transports: [
         new winston.transports.Console(),
         new winston.transports.File({
-            filename: `${logDir}/winston-log.txt`,
-            level: 'info',
+            filename: `${logDir}/winston-error.log`,
+            level: 'error',
         }),
     ],
     format: winston.format.combine(
@@ -101,18 +99,9 @@ app.get('/', (req, res) => {
 });
 app.use(express.static(publicPath));
 
-/*
-app.get('/', (req: express.Request, res: express.Response) => {
-    fs.readFile('./public/index.html', 'utf8', function (err, html) {
-        console.log({ html });
-        if (!err) res.send(html);
-        return;
-    });
-    res.status(200).send(`Server running at http://localhost:${port}`);
-});
-*/
+app.listen(8000);
 
-export default server.listen(port, () => {
+export default server.listen(8080, () => {
     debugLog(`Server running at http://localhost:${port}`);
     routes.forEach((route: CommonRoutesConfig) => {
         debugLog(`Routes configured for ${route.getName()}`);
