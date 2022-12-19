@@ -25,6 +25,7 @@ if (typeof WOO_GB_MYCRED_API_ENDPOINT !== 'string') {
 }
 
 import express from 'express';
+import http from 'http';
 import https from 'https';
 import * as bodyparser from 'body-parser';
 import * as winston from 'winston';
@@ -36,15 +37,25 @@ import { CommonRoutesConfig } from './common/common.routes.config';
 import { LoyaltyRoutes } from './loyalty/loyalty.routes.config';
 import fs from 'fs';
 import path from 'path';
+import { CouponsRoutes } from './coupons/coupons.routes.config';
 
-const app: express.Application = express();
-const options = {
-    key: fs.readFileSync('/var/lib/jelastic/keys/privkey.pem', 'utf-8'),
-    cert: fs.readFileSync('/var/lib/jelastic/keys/fullchain.pem', 'utf-8'),
-};
+let key: string | undefined;
+let cert: string | undefined;
+try {
+    key = fs.readFileSync('/var/lib/jelastic/keys/privkey.pem', 'utf-8');
+    cert = fs.readFileSync('/var/lib/jelastic/keys/fullchain.pem', 'utf-8');
+} catch {}
 
 const port = process.env.PORT ?? 8080;
-const server: https.Server = https.createServer(options, app);
+
+const app: express.Application = express();
+let server: http.Server | https.Server;
+
+if (key && cert) {
+    server = https.createServer({ key, cert }, app);
+} else {
+    server = http.createServer(app);
+}
 
 const routes: CommonRoutesConfig[] = [];
 const debugLog: debug.IDebugger = debug('server');
@@ -94,15 +105,16 @@ routes.push(new LoyaltyRoutes(app));
 // routes.push(new MyCredRoutes(app));
 
 const publicPath = path.join(__dirname, '../public');
+
+app.use(express.static(publicPath));
 app.get('/', (req, res) => {
     res.sendFile(path.join(publicPath, 'index.html'));
 });
-app.use(express.static(publicPath));
 
 app.listen(8000);
 
-export default server.listen(8080, () => {
-    debugLog(`Server running at http://localhost:${port}`);
+export default server.listen(port, () => {
+    debugLog(`Server running at https://localhost:${port}`);
     routes.forEach((route: CommonRoutesConfig) => {
         debugLog(`Routes configured for ${route.getName()}`);
     });
