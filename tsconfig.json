@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ES6",
+    "module": "CommonJS",
     "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
@@ -13,5 +13,10 @@
   "exclude": [
     "node_modules",
     "test/**/*.ts"
+  ],
+  "ts-node": {"files": true},
+  "files": [
+    "src/server.ts",
+    "src/typings/globals.d.ts",
   ],
 }

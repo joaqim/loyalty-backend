@@ -37,14 +37,16 @@ import { CommonRoutesConfig } from './common/common.routes.config';
 import { LoyaltyRoutes } from './loyalty/loyalty.routes.config';
 import fs from 'fs';
 import path from 'path';
-import { CouponsRoutes } from './coupons/coupons.routes.config';
 
 let key: string | undefined;
 let cert: string | undefined;
 try {
     key = fs.readFileSync('/var/lib/jelastic/keys/privkey.pem', 'utf-8');
     cert = fs.readFileSync('/var/lib/jelastic/keys/fullchain.pem', 'utf-8');
-} catch {}
+} catch {
+    // Assume we are outside of jelastic environment
+    // and therefore won't need SSI certificate for https
+}
 
 const port = process.env.PORT ?? 8080;
 
